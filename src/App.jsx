@@ -19,10 +19,15 @@ function App() {
   return (
     <Router>
       <Routes>
+   
         <Route path="/" element={<Bienvenida/>}/>
+
+        //Actores
         <Route path="/identificacion" element={<Identificacion />}/>
         <Route path="/experiencia" element={<Experiencia />}/>
         <Route path="/calificaciones" element={<Calificaciones />}/>
+
+        //Diagnostico
         <Route path="/productorinfo" element={<ProductorInfo/>}/>
         <Route path="/variedadcafe" element={<VariedadCafe/>}/>
         <Route path="/siembracaracteristicas" element={<SiembraCaracteristicas/>}/>
@@ -33,6 +38,7 @@ function App() {
         <Route path="/almacenamiento" element={<Almacenamiento/>}/>
         <Route path="/procesotostado" element={<ProcesoTostado/>}/>
         <Route path="/calidadtaza" element={<CalidadTaza/>}/>
+        
       </Routes>
     </Router>
   );
