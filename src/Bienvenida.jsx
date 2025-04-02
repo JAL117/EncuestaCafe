@@ -73,7 +73,7 @@ export default function Bienvenida() {
               Encuesta de Actores
             </Link>
 
-            <Link to="/" className="btn btn-lg px-4" style={{
+            <Link to="/productorinfo" className="btn btn-lg px-4" style={{
               background: tertiaryColor,
               color: 'white',
               borderRadius: '25px',
