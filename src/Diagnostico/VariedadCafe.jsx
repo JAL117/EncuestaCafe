@@ -18,17 +18,17 @@ const PREGUNTA_IDS = {
 function VariedadCafe() {
     const [formData, setFormData] = useState({
         inicioOperaciones: '',
-        cosechoUltimoCiclo: null, // 'si' o 'no'
+        cosechoUltimoCiclo: null, 
         extensionParcela: '',
-        variedadesCultivadas: { // Usar objeto para checkboxes
+        variedadesCultivadas: { 
             Caturra: false, Catimor: false, MundoNovo: false, CostaRica95: false,
             Tipica: false, Geisha: false, Bourbon: false, CafeOro: false,
             Otra: false, Desconoce: false, Mezcla: false,
         },
-        variedadOtraCual: '', // Campo extra si selecciona 'Otra'
+        variedadOtraCual: '', 
         produccionKgSeco: '',
         edadCafeto: '',
-        conoceNumPlantas: null, // 'si' o 'no'
+        conoceNumPlantas: null, 
         cantidadPlantas: '',
     });
     const [error, setError] = useState('');
@@ -51,7 +51,7 @@ function VariedadCafe() {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         if (name === 'conoceNumPlantas' && value === 'no') {
-            setFormData(prev => ({ ...prev, cantidadPlantas: '' })); // Limpiar cantidad si no conoce
+            setFormData(prev => ({ ...prev, cantidadPlantas: '' })); 
         }
         if (error) setError('');
     };
@@ -66,7 +66,7 @@ function VariedadCafe() {
             }
         }));
         if (!checked && name === 'Otra') {
-             setFormData(prev => ({ ...prev, variedadOtraCual: '' })); // Limpiar 'cual' si desmarca 'Otra'
+             setFormData(prev => ({ ...prev, variedadOtraCual: '' })); 
         }
         if (error) setError('');
     };
@@ -75,7 +75,7 @@ function VariedadCafe() {
         e.preventDefault();
         setError('');
 
-        // Validación
+        
         const variedadesSeleccionadas = Object.values(formData.variedadesCultivadas).some(v => v);
         if (!formData.inicioOperaciones || formData.cosechoUltimoCiclo === null || !formData.extensionParcela || !variedadesSeleccionadas || !formData.produccionKgSeco || !formData.edadCafeto || formData.conoceNumPlantas === null) {
              setError('Por favor, complete todos los campos obligatorios.');
@@ -90,17 +90,17 @@ function VariedadCafe() {
              return;
         }
 
-        // Preparar datos para API
+      
         const dataToSend = [];
 
-        // Añadir campos simples y radios
+     
         ['inicioOperaciones', 'cosechoUltimoCiclo', 'extensionParcela', 'produccionKgSeco', 'edadCafeto', 'conoceNumPlantas', 'cantidadPlantas'].forEach(key => {
             if (formData[key] !== null && formData[key] !== '' && PREGUNTA_IDS[key]) {
                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(formData[key]) });
             }
         });
 
-        // Añadir variedades (checkboxes) como un solo registro si se seleccionó alguna
+       
         const selectedVariedades = Object.entries(formData.variedadesCultivadas)
             .filter(([_, isSelected]) => isSelected)
             .map(([name, _]) => name);
@@ -127,7 +127,7 @@ function VariedadCafe() {
             if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
             const result = await response.json();
             console.log('API Response (VariedadCafe):', result);
-            navigate('/siembra-caracteristicas'); // <-- AJUSTA RUTA SIGUIENTE
+            navigate('/siembracaracteristicas'); 
 
         } catch (err) {
             console.error('API Error (VariedadCafe):', err);

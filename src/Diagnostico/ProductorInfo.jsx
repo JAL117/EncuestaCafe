@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
+const API_ENDPOINT = 'TU_API_ENDPOINT'; 
 
 const PREGUNTA_IDS = {
     nombreProductor: 26,
@@ -17,7 +17,7 @@ function ProductorInfo() {
         nombreProductor: '',
         municipio: '',
         localidad: '',
-        perteneceGrupo: null, // 'si' o 'no'
+        perteneceGrupo: null, 
         nombreGrupo: '',
     });
     const [error, setError] = useState('');
@@ -28,7 +28,7 @@ function ProductorInfo() {
     const secondaryColor = '#BF1029';
     const baseColor = '#E0E4E4';
     const textColor = '#000000';
-    const tertiaryColor = '#D15078'; // Para bordes si es necesario
+    const tertiaryColor = '#D15078'; 
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -37,7 +37,7 @@ function ProductorInfo() {
             [name]: type === 'radio' ? value : value,
         }));
         if (name === 'perteneceGrupo' && value === 'no') {
-             setFormData(prev => ({ ...prev, nombreGrupo: '' })); // Limpiar nombre si selecciona 'no'
+             setFormData(prev => ({ ...prev, nombreGrupo: '' })); 
         }
         if (error) setError('');
     };
@@ -57,10 +57,10 @@ function ProductorInfo() {
         }
 
         const dataToSend = Object.entries(formData)
-            .filter(([key, value]) => value !== null && value !== '' && PREGUNTA_IDS[key] !== undefined) // Enviar solo respondidas y con ID
+            .filter(([key, value]) => value !== null && value !== '' && PREGUNTA_IDS[key] !== undefined) 
             .map(([key, value]) => ({
                 pregunta_id: PREGUNTA_IDS[key],
-                respuesta: String(value), // Asegurar que sea string
+                respuesta: String(value), 
             }));
 
         console.log('Datos a enviar (ProductorInfo):', dataToSend);
