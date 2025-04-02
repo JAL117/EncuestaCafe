@@ -75,7 +75,7 @@ function Identificacion() {
             const result = await response.json();
             console.log('Respuesta exitosa de la API:', result);
 
-            navigate('/experiencia'); // Reemplaza '/experiencia' con tu ruta correcta
+            navigate('/experiencia'); 
 
         } catch (error) {
             console.error('Error al enviar los datos a la API:', error);
