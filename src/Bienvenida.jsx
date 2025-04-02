@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logoUpch from '../src/img/Logo_HumanismoSimple.png';  // Importa la imagen del logo.
+import logoUpch from '../src/img/Logo_HumanismoSimple.png';  
 
 export default function Bienvenida() {
   const primaryColor = '#0B9785';
@@ -10,7 +10,7 @@ export default function Bienvenida() {
 
   return (
     <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100" style={{ backgroundColor: baseColor }}>
-      <div className="card text-center shadow-lg border-0" style={{ width: '100%', maxWidth: '80%' }}>
+      <div className="card text-center shadow-lg border-0" style={{ width: '100%', maxWidth: '90%' , }}>
 
         <div className="card-header" style={{
           background: primaryColor,
@@ -26,13 +26,13 @@ export default function Bienvenida() {
           padding: '30px 20px'
         }}>
 
-          {/* Sección del Logo Centrado */}
+          
           <div className="d-flex justify-content-center mb-3">
             <img
               src={logoUpch}
               alt="Logo UPCH"
               className="img-fluid"
-              style={{ maxWidth: '200px', height: 'auto' }} // Ajusta maxWidth según sea necesario
+              style={{ maxWidth: '200px', height: 'auto' }} 
             />
           </div>
 
@@ -52,7 +52,7 @@ export default function Bienvenida() {
             margin: '15px auto'
           }}></div>
 
-          <p className="card-text mb-4" style={{ color: primaryColor, fontSize: 'clamp(0.9rem, 1.5vw, 1rem)' }}>
+          <p className="card-text mb-4" style={{ color: primaryColor, fontSize: 'clamp(1.8rem, 1.5vw, 1rem)' }}>
             <strong>Encuesta</strong>
             <br />
             Este instrumento de medición ha sido diseñado con la finalidad de obtener información
