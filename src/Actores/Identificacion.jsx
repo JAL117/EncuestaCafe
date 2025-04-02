@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_ENDPOINT = '/api/respuestas'; 
+const API_ENDPOINT = '/api/respuestas';
 
 const ID_PREGUNTA_USTED = 1;
 const ID_PREGUNTA_PERTENECE = 2;
@@ -38,18 +38,13 @@ function Identificacion() {
             return;
         }
 
-        const dataToSend = [
-            {
-                pregunta_id: ID_PREGUNTA_USTED,
-                respuesta: usted
-            },
-            {
-                pregunta_id: ID_PREGUNTA_PERTENECE,
-                respuesta: pertenece
-            }
-        ];
+        const dataToSend = {
+            respuesta_usted: usted,
+            respuesta_pertenece: pertenece
+       
+        };
 
-        console.log('Datos a enviar a la API:', dataToSend);
+        console.log('Datos a enviar a la API (solo respuestas):', dataToSend);
         setIsLoading(true);
 
         try {
@@ -75,7 +70,7 @@ function Identificacion() {
             const result = await response.json();
             console.log('Respuesta exitosa de la API:', result);
 
-            navigate('/experiencia'); 
+            navigate('/experiencia');
 
         } catch (error) {
             console.error('Error al enviar los datos a la API:', error);
