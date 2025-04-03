@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-const API_ENDPOINT = '/api/encuesta/respuestas'; 
+const API_ENDPOINT = 'http://localhost:3000'; 
 
 const PREGUNTA_IDS = {
     alturaParcela: 16,

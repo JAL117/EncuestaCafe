@@ -5,19 +5,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = '/api/encuesta/respuestas'; // REEMPLAZA ESTA URL
 
 const PREGUNTA_IDS = {
-    pregunta1: 3,
-    pregunta2: 4,
-    pregunta3: 5,
-    pregunta4: 6,
-    pregunta5: 7,
-    pregunta6: 8,
-    pregunta7: 9,
-    pregunta8Lavado: 10,
-    pregunta8NaturalSeco: 11,
-    pregunta8Honey: 12,
-    pregunta9: 13,
-    pregunta10: 14,
-    pregunta11: 15,
+    pregunta1: 1,
+    pregunta2: 2,
+    pregunta3: 3,
+    pregunta4: 4,
+    pregunta5: 5,
+    pregunta6: 6,
+    pregunta7: 7,
+    pregunta8Lavado: 8,
+    pregunta8NaturalSeco: 9,
+    pregunta8Honey: 10,
+    pregunta9: 11,
+    pregunta10: 12,
+    pregunta11: 13,
 };
 
 function FormularioCalidadCafe() {
@@ -74,6 +74,7 @@ function FormularioCalidadCafe() {
         setIsLoading(true);
 
         try {
+            console.log(dataToSend);
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
                 headers: {
