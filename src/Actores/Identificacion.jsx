@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const API_ENDPOINT = '/api/respuestas';
+const API_ENDPOINT = 'http://localhost:3000';
 
 const ID_PREGUNTA_USTED = 1;
 const ID_PREGUNTA_PERTENECE = 2;
@@ -39,42 +40,22 @@ function Identificacion() {
         }
 
         const dataToSend = {
-            respuesta_usted: usted,
-            respuesta_pertenece: pertenece
-       
+            TipoUsuario: usted,
+            PerteneceA: pertenece
         };
 
         console.log('Datos a enviar a la API (solo respuestas):', dataToSend);
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataToSend)
-            });
+            const response = await axios.post(`${API_ENDPOINT}/encuestados`, dataToSend);
 
-            if (!response.ok) {
-                let errorMessage = `Error del servidor: ${response.status} ${response.statusText}`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                } catch (jsonError) {
-                    console.error("No se pudo parsear la respuesta de error como JSON:", jsonError);
-                }
-                throw new Error(errorMessage);
-            }
-
-            const result = await response.json();
-            console.log('Respuesta exitosa de la API:', result);
-
+            console.log('Respuesta exitosa de la API:', response.data);
             navigate('/experiencia');
-
         } catch (error) {
             console.error('Error al enviar los datos a la API:', error);
-            setError(`Error al guardar las respuestas: ${error.message}. Por favor, inténtelo de nuevo.`);
+            const errorMessage = error.response?.data?.message || error.message || 'Error desconocido';
+            setError(`Error al guardar las respuestas: ${errorMessage}. Por favor, inténtelo de nuevo.`);
         } finally {
             setIsLoading(false);
         }
@@ -115,28 +96,28 @@ function Identificacion() {
                             </h6>
                             <div className="list-group">
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="productor" onChange={handleUstedChange} checked={usted === 'productor'} /> Productor/a
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Productor/a" onChange={handleUstedChange} checked={usted === 'Productor/a'} /> Productor/a
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="comprador" onChange={handleUstedChange} checked={usted === 'comprador'} /> Comprador/a
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Comprador/a" onChange={handleUstedChange} checked={usted === 'Comprador/a'} /> Comprador/a
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="tecnico" onChange={handleUstedChange} checked={usted === 'tecnico'} /> Técnico del Campo
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Tecnico del campo" onChange={handleUstedChange} checked={usted === 'Tecnico del campo'} /> Técnico del Campo
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="barista" onChange={handleUstedChange} checked={usted === 'barista'}/> Barista
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Barista" onChange={handleUstedChange} checked={usted === 'Barista'}/> Barista
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="catador" onChange={handleUstedChange} checked={usted === 'catador'}/> Catador
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Catador" onChange={handleUstedChange} checked={usted === 'Catador'}/> Catador
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="especialista" onChange={handleUstedChange} checked={usted === 'especialista'}/> Especialista Practico o Conocedor/a de Café
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Especialista Practico o Conocedor/a de Café" onChange={handleUstedChange} checked={usted === 'Especialista Practico o Conocedor/a de Café'}/> Especialista Practico o Conocedor/a de Café
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="investigador" onChange={handleUstedChange} checked={usted === 'investigador'}/> Investigador/a
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Investigador/a" onChange={handleUstedChange} checked={usted === 'investiInvestigador/agador'}/> Investigador/a
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="estudiante" onChange={handleUstedChange} checked={usted === 'estudiante'}/> Estudiante relacionado con cafeología
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Estudiante relacionado con cafeologia" onChange={handleUstedChange} checked={usted === 'estudiEstudiante relacionado con cafeologiaante'}/> Estudiante relacionado con cafeología
                                 </label>
                             </div>
                         </div>
@@ -147,19 +128,19 @@ function Identificacion() {
                             </h6>
                             <div className="list-group">
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="grupoSocial" onChange={handlePerteneceChange} checked={pertenece === 'grupoSocial'} /> Grupo Social
+                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="Grupo Social" onChange={handlePerteneceChange} checked={pertenece === 'Grupo Social'} /> Grupo Social
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="sectorPrivado" onChange={handlePerteneceChange} checked={pertenece === 'sectorPrivado'} /> Sector Privado
+                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="Sector Privado" onChange={handlePerteneceChange} checked={pertenece === 'Sector Privado'} /> Sector Privado
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="sectorPublico" onChange={handlePerteneceChange} checked={pertenece === 'sectorPublico'} /> Sector Publico (Dependencias)
+                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="Sector Publico (Dependencias)" onChange={handlePerteneceChange} checked={pertenece === 'Sector Publico (Dependencias)'} /> Sector Publico (Dependencias)
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="centrosInvestigacion" onChange={handlePerteneceChange} checked={pertenece === 'centrosInvestigacion'}/> Centros de Investigación/Universidades
+                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="Centros de Investigación/Universidades" onChange={handlePerteneceChange} checked={pertenece === 'Centros de Investigación/Universidades'}/> Centros de Investigación/Universidades
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="ningunGrupo" onChange={handlePerteneceChange} checked={pertenece === 'ningunGrupo'}/> No pertenece a ningún grupo
+                                    <input className="form-check-input me-1" type="radio" name="pertenece" value="No pertenece a ningún grupo" onChange={handlePerteneceChange} checked={pertenece === 'No pertenece a ningún grupo'}/> No pertenece a ningún grupo
                                 </label>
                             </div>
                         </div>
