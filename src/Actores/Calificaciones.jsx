@@ -6,16 +6,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = '/api/encuesta/respuestas'; 
 
 const PREGUNTA_IDS = {
-    alturaParcela: 16,
-    variedadCultivada: 17,
-    corteCereza: 18,
-    procesoFermentacion: 19,
-    tiemposFermentacion: 20,
-    temperaturaParcela: 21,
-    precipitacionPluvial1: 22,
-    precipitacionPluvial2: 23,
-    cuidadosAgroecologicos: 24,
-    procesoTueste: 25,
+    alturaParcela: 14,
+    variedadCultivada: 15,
+    corteCereza: 16,
+    procesoFermentacion: 17,
+    tiemposFermentacion: 18,
+    temperaturaParcela: 19,
+    precipitacionPluvial1: 20,
+    precipitacionPluvial2: 21,
+    cuidadosAgroecologicos: 22,
+    procesoTueste: 23,
 };
 
 
