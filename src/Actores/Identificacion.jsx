@@ -51,6 +51,15 @@ function Identificacion() {
             const response = await axios.post(`${API_ENDPOINT}/encuestados`, dataToSend);
 
             console.log('Respuesta exitosa de la API:', response.data);
+
+            if (response.data && response.data.EncuestadoID) { 
+                const encuestadoId = response.data.EncuestadoID;
+                localStorage.setItem('encuestadoId', encuestadoId);
+                console.log('ID del encuestado guardado en localStorage:', encuestadoId);
+            } else {
+                console.warn('La respuesta de la API no contenía un ID para guardar.');
+            }
+
             navigate('/experiencia');
         } catch (error) {
             console.error('Error al enviar los datos a la API:', error);
@@ -114,10 +123,10 @@ function Identificacion() {
                                     <input className="form-check-input me-1" type="radio" name="usted" value="Especialista Practico o Conocedor/a de Café" onChange={handleUstedChange} checked={usted === 'Especialista Practico o Conocedor/a de Café'}/> Especialista Practico o Conocedor/a de Café
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="Investigador/a" onChange={handleUstedChange} checked={usted === 'investiInvestigador/agador'}/> Investigador/a
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Investigador/a" onChange={handleUstedChange} checked={usted === 'Investigador/a'}/> Investigador/a
                                 </label>
                                 <label className="list-group-item" style={{ backgroundColor: baseColor, borderColor: tertiaryColor, color: textColor }}>
-                                    <input className="form-check-input me-1" type="radio" name="usted" value="Estudiante relacionado con cafeologia" onChange={handleUstedChange} checked={usted === 'estudiEstudiante relacionado con cafeologiaante'}/> Estudiante relacionado con cafeología
+                                    <input className="form-check-input me-1" type="radio" name="usted" value="Estudiante relacionado con cafeologia" onChange={handleUstedChange} checked={usted === 'Estudiante relacionado con cafeologia'}/> Estudiante relacionado con cafeología
                                 </label>
                             </div>
                         </div>
