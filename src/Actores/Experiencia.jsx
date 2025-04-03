@@ -1,23 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Añadir useEffect si necesitas lógica al cargar
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_ENDPOINT = '/api/encuesta/respuestas'; // REEMPLAZA ESTA URL
-
+// IDs de pregunta (útiles para estructurar datos o mostrar en resultados)
 const PREGUNTA_IDS = {
-    pregunta1: 3,
-    pregunta2: 4,
-    pregunta3: 5,
-    pregunta4: 6,
-    pregunta5: 7,
-    pregunta6: 8,
-    pregunta7: 9,
-    pregunta8Lavado: 10,
-    pregunta8NaturalSeco: 11,
-    pregunta8Honey: 12,
-    pregunta9: 13,
-    pregunta10: 14,
-    pregunta11: 15,
+    pregunta1: 3, pregunta2: 4, pregunta3: 5, pregunta4: 6, pregunta5: 7,
+    pregunta6: 8, pregunta7: 9, pregunta8Lavado: 10, pregunta8NaturalSeco: 11,
+    pregunta8Honey: 12, pregunta9: 13, pregunta10: 14, pregunta11: 15,
 };
 
 function FormularioCalidadCafe() {
@@ -29,13 +18,13 @@ function FormularioCalidadCafe() {
     });
 
     const navigate = useNavigate();
+    const location = useLocation(); // Para recibir datos del paso anterior
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
+    // Colores y opciones (igual que antes)
     const primaryColor = '#0B9785';
     const secondaryColor = '#BF1029';
     const baseColor = '#E0E4E4';
-
     const opcionesCalificacion = [
         { value: '2', label: 'Muy Débil (2)', color: '#28a745' },
         { value: '4', label: 'Débil (4)', color: '#ffc107' },
@@ -43,6 +32,20 @@ function FormularioCalidadCafe() {
         { value: '8', label: 'Fuerte (8)', color: '#dc3545' },
         { value: '10', label: 'Muy Fuerte (10)', color: '#BF1029' },
     ];
+
+    // Extraer datos del paso anterior
+    const identificacionData = location.state?.identificacionData;
+
+    // Verificar si llegaron los datos (opcional pero recomendado)
+    useEffect(() => {
+        if (!identificacionData) {
+            console.warn("No se recibieron datos de identificación. Volviendo al inicio.");
+            // Podrías redirigir o mostrar un error más permanente
+             // navigate('/'); // Descomenta si quieres forzar volver al inicio
+             setError("Error: Faltan datos del paso anterior. Por favor, comienza de nuevo.");
+        }
+    }, [identificacionData, navigate]);
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -53,59 +56,43 @@ function FormularioCalidadCafe() {
         if (error) setError('');
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         setError('');
 
+        // Validar que todas las preguntas de ESTE formulario estén respondidas
         const todasRespondidas = Object.values(respuestas).every(respuesta => respuesta !== '');
-
         if (!todasRespondidas) {
-            setError('Por favor, responde a todas las preguntas antes de continuar.');
+            setError('Por favor, responde a todas las preguntas de esta sección antes de continuar.');
             return;
         }
 
-        const dataToSend = Object.entries(respuestas)
-            .map(([key, value]) => ({
-                pregunta_id: PREGUNTA_IDS[key],
-                respuesta: value
-            }));
-
-        console.log('Datos a enviar a la API:', dataToSend);
-        setIsLoading(true);
-
-        try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataToSend)
-            });
-
-            if (!response.ok) {
-                let errorMessage = `Error del servidor: ${response.status} ${response.statusText}`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                } catch (jsonError) {
-                     console.error("No se pudo parsear la respuesta de error como JSON:", jsonError);
-                }
-                throw new Error(errorMessage);
-            }
-
-            const result = await response.json();
-            console.log('Respuesta exitosa de la API:', result);
-
-            navigate('/calificaciones'); 
-
-        } catch (err) {
-            console.error('Error al enviar los datos a la API:', err);
-            setError(`Error al guardar las respuestas: ${err.message}. Por favor, inténtelo de nuevo.`);
-        } finally {
-            setIsLoading(false);
+        // Validar que tengamos los datos del paso anterior
+        if (!identificacionData) {
+             setError("Error: Faltan datos del paso anterior. Por favor, comienza la encuesta de nuevo.");
+             return; // Detener si faltan datos cruciales
         }
+
+
+        // Prepara los datos de este formulario (incluyendo IDs)
+        const formularioData = {};
+        for (const key in respuestas) {
+            if (respuestas.hasOwnProperty(key)) {
+                formularioData[key] = { // Guardamos valor e ID
+                   respuesta: respuestas[key],
+                   pregunta_id: PREGUNTA_IDS[key]
+                }
+            }
+        }
+
+        console.log('Datos de Formulario Impacto recopilados:', formularioData);
+        console.log('Datos acumulados (Identificación + Formulario):', { identificacionData, formularioData });
+
+        // Navega al siguiente paso, pasando TODOS los datos acumulados
+        navigate('/calificaciones', { state: { identificacionData, formularioData } });
     };
 
+    // Funciones renderPreguntaLabel y renderRadioButtons (sin cambios lógicos)
     const renderRadioButtons = (nombrePregunta) => (
         opcionesCalificacion.map(opcion => (
             <div className="form-check form-check-inline" key={`${nombrePregunta}_${opcion.value}`}>
@@ -118,7 +105,6 @@ function FormularioCalidadCafe() {
                     checked={respuestas[nombrePregunta] === opcion.value}
                     onChange={handleChange}
                     required
-                    disabled={isLoading}
                 />
                 <label className="form-check-label" htmlFor={`${nombrePregunta}_${opcion.value}`}>
                     {opcion.label}
@@ -150,7 +136,7 @@ function FormularioCalidadCafe() {
         }
     };
 
-    const tableHeaderStyle = (color) => ({
+     const tableHeaderStyle = (color) => ({
         backgroundColor: color,
         color: '#ffffff',
         fontWeight: 'bold',
@@ -162,10 +148,7 @@ function FormularioCalidadCafe() {
     return (
         <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style={{ backgroundColor: baseColor }}>
             <div className="card shadow-lg border-0" style={{ width: '100%', maxWidth: '85%', overflowX: 'hidden' }}>
-                <div className="card-body" style={{
-                    background: baseColor,
-                    padding: '30px 20px'
-                }}>
+                <div className="card-body" style={{ background: baseColor, padding: '30px 20px' }}>
 
                     <h2 className="card-title text-center mb-4" style={{ color: primaryColor }}>
                         Evaluación de Impacto en Calidad de Taza de Café
@@ -176,6 +159,7 @@ function FormularioCalidadCafe() {
                         de acuerdo a la siguiente calificación:
                     </p>
 
+                    {/* Tabla de calificaciones (visual) */}
                     <div className="table-responsive mb-4">
                         <table className="table table-bordered">
                             <thead>
@@ -188,29 +172,25 @@ function FormularioCalidadCafe() {
                         </table>
                     </div>
 
+                    {/* Mensaje de error */}
                     {error && (
                          <div
                             className="alert"
                             style={{
-                                backgroundColor: '#FFDEDE',
-                                borderColor: '#E57373',
-                                color: '#D32F2F',
-                                borderRadius: '25px',
-                                padding: '10px',
-                                marginBottom: '15px',
-                                textAlign: 'center'
+                                backgroundColor: '#FFDEDE', borderColor: '#E57373', color: '#D32F2F',
+                                borderRadius: '25px', padding: '10px', marginBottom: '15px', textAlign: 'center'
                             }}
-                            role="alert"
-                        >
+                            role="alert" >
                             {error}
                         </div>
                     )}
 
+                    {/* Formulario */}
                     <form onSubmit={handleSubmit}>
-
-                        {Object.keys(PREGUNTA_IDS)
+                        {/* Renderizar preguntas 1 a 7 */}
+                         {Object.keys(PREGUNTA_IDS)
                             .filter(key => key.startsWith('pregunta') && !key.startsWith('pregunta8') && parseInt(key.replace('pregunta','')) <= 7)
-                            .sort((a, b) => PREGUNTA_IDS[a] - PREGUNTA_IDS[b])
+                            .sort((a, b) => PREGUNTA_IDS[a] - PREGUNTA_IDS[b]) // Ordenar por ID
                             .map(nombrePregunta => (
                             <div className="mb-4" key={nombrePregunta}>
                                 <label className="form-label d-block mb-2" style={{ fontWeight: 'bold', color: primaryColor, fontSize: 'clamp(0.9rem, 1.8vw, 1.1rem)' }}>
@@ -222,13 +202,14 @@ function FormularioCalidadCafe() {
                             </div>
                         ))}
 
+                       {/* Renderizar pregunta 8 (agrupada) */}
                        <div className="mb-4">
                            <label className="form-label d-block mb-2" style={{ fontWeight: 'bold', color: primaryColor, fontSize: 'clamp(0.9rem, 1.8vw, 1.1rem)' }}>
                               {renderPreguntaLabel('pregunta8')}
                            </label>
                            {['Lavado', 'NaturalSeco', 'Honey'].map(proceso => (
-                             <div key={`pregunta8${proceso}`} className="mb-3 ms-3">
-                               <label className="form-label d-block mb-2" style={{ fontWeight: 'normal', color: primaryColor }}>
+                             <div key={`pregunta8${proceso}`} className="mb-3 ms-3"> {/* Añadido ms-3 para indentación */}
+                               <label className="form-label d-block mb-2" style={{ fontWeight: 'normal', color: primaryColor }}> {/* Menos énfasis */}
                                  {renderPreguntaLabel(`pregunta8${proceso}`)}
                                </label>
                                <div className="d-flex flex-wrap justify-content-start gap-3">
@@ -238,9 +219,10 @@ function FormularioCalidadCafe() {
                            ))}
                        </div>
 
+                        {/* Renderizar preguntas 9 a 11 */}
                         {Object.keys(PREGUNTA_IDS)
                             .filter(key => key.startsWith('pregunta') && parseInt(key.replace('pregunta','')) >= 9)
-                            .sort((a, b) => PREGUNTA_IDS[a] - PREGUNTA_IDS[b])
+                            .sort((a, b) => PREGUNTA_IDS[a] - PREGUNTA_IDS[b]) // Ordenar por ID
                             .map(nombrePregunta => (
                              <div className="mb-4" key={nombrePregunta}>
                                 <label className="form-label d-block mb-2" style={{ fontWeight: 'bold', color: primaryColor, fontSize: 'clamp(0.9rem, 1.8vw, 1.1rem)' }}>
@@ -252,24 +234,18 @@ function FormularioCalidadCafe() {
                             </div>
                         ))}
 
+                        {/* Botón Siguiente */}
                         <div className="d-flex justify-content-center mt-4">
                             <button
                                 type="submit"
                                 className="btn btn-lg px-4"
                                 style={{
-                                    background: secondaryColor,
-                                    color: 'white',
-                                    borderRadius: '25px',
-                                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-                                    fontWeight: 'bold',
-                                    transition: 'all 0.3s ease',
-                                    fontSize: 'clamp(0.9rem, 1.5vw, 1rem)',
-                                    opacity: isLoading ? 0.7 : 1,
-                                    cursor: isLoading ? 'wait' : 'pointer'
+                                    background: secondaryColor, color: 'white', borderRadius: '25px',
+                                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)', fontWeight: 'bold',
+                                    transition: 'all 0.3s ease', fontSize: 'clamp(0.9rem, 1.5vw, 1rem)'
                                 }}
-                                disabled={isLoading}
                             >
-                                {isLoading ? 'Enviando...' : 'Siguiente'}
+                                Siguiente
                             </button>
                         </div>
                     </form>

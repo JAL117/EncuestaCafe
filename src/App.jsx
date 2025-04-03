@@ -13,6 +13,7 @@ import ProcesoSecado from './Diagnostico/ProcesoSecado';
 import Almacenamiento from './Diagnostico/Almacenamiento';
 import ProcesoTostado from './Diagnostico/ProcesoTostado';
 import CalidadTaza from './Diagnostico/CalidadTaza';
+import Resultados from './Actores/Resultados';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/identificacion" element={<Identificacion />}/>
         <Route path="/experiencia" element={<Experiencia />}/>
         <Route path="/calificaciones" element={<Calificaciones />}/>
+        <Route path="/resultados" element={<Resultados/>}/>
 
         //Diagnostico
         <Route path="/productorinfo" element={<ProductorInfo/>}/>
