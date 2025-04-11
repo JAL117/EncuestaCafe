@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT';
 
 const PREGUNTA_IDS = {
-    realizaDescascarillado: 61,
-    descripcionAlmacenamiento: 62,
+    realizaDescascarillado: 36,
+    descripcionAlmacenamiento: 37,
 };
 
 function Almacenamiento() {

@@ -5,14 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    inicioOperaciones: 31,
-    cosechoUltimoCiclo: 32,
-    extensionParcela: 33,
-    variedadesCultivadas: 34,
-    produccionKgSeco: 35,
-    edadCafeto: 36,
-    conoceNumPlantas: 37,
-    cantidadPlantas: 38,
+    inicioOperaciones: 6,
+    cosechoUltimoCiclo: 7,
+    extensionParcela: 8,
+    variedadesCultivadas: 9,
+    produccionKgSeco: 10,
+    edadCafeto: 11,
+    conoceNumPlantas: 12,
+    cantidadPlantas: 13,
 };
 
 function VariedadCafe() {

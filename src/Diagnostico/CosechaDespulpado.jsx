@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    recolectaClasificacion: 52,
-    procesoDespulpado: 53,
+    recolectaClasificacion: 27,
+    procesoDespulpado: 28,
 };
 
 function CosechaDespulpado() {

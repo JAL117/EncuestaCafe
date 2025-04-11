@@ -5,11 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; 
 
 const PREGUNTA_IDS = {
-    nombreProductor: 26,
-    municipio: 27,
-    localidad: 28,
-    perteneceGrupo: 29,
-    nombreGrupo: 30,
+    nombreProductor: 1,
+    municipio: 2,
+    localidad: 3,
+    perteneceGrupo: 4,
+    nombreGrupo: 5,
 };
 
 function ProductorInfo() {

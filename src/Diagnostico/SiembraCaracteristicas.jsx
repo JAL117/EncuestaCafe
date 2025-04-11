@@ -5,19 +5,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    practicasCafetal: 39,
-    analisisSuelos: 40,
-    monitoreoPlagas: 41,
-    tipoSombra: 42,
-    recursosPlantaciones: 43,
-    recursosOtro: 44,
-    historialEnfermedadesAnteriorSiNo: 45,
-    historialEnfermedadesUltimaSiNo: 46,
-    enfermedadPlagaAnterior: 47,
-    controlAnterior: 48,
-    enfermedadPlagaUltima: 49,
-    controlUltima: 50,
-    tipoArbolesSombra: 51,
+    practicasCafetal: 14,
+    analisisSuelos: 15,
+    monitoreoPlagas: 16,
+    tipoSombra: 17,
+    recursosPlantaciones: 18,
+    recursosOtro: 19,
+    historialEnfermedadesAnteriorSiNo: 20,
+    historialEnfermedadesUltimaSiNo: 21,
+    enfermedadPlagaAnterior: 22,
+    controlAnterior: 23,
+    enfermedadPlagaUltima: 24,
+    controlUltima: 25,
+    tipoArbolesSombra: 26,
 };
 
 function SiembraCaracteristicas() {

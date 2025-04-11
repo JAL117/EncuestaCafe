@@ -4,9 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; 
 const PREGUNTA_IDS = {
-    metodoSecado: 58,
-    metodoSecadoOtro: 59, 
-    descripcionSecado: 60,
+    metodoSecado: 33,
+    metodoSecadoOtro: 34, 
+    descripcionSecado: 35,
 };
 
 function ProcesoSecado() {

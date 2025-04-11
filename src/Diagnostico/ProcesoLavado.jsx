@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    numeroLavados: 57,
+    numeroLavados: 32,
 };
 
 function ProcesoLavado() {

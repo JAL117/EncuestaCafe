@@ -5,9 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    tratamientoCereza: 54,
-    tratamientoOtro: 55, 
-    fermentacionLavados: 56, 
+    tratamientoCereza: 29,
+    tratamientoOtro: 30, 
+    fermentacionLavados: 31, 
 };
 
 function LavadoFermentacion() {

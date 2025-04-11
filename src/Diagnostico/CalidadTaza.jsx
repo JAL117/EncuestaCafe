@@ -5,10 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    realizoCatacion: 65,
-    calificacionCatacion: 66,
-    notasAroma: 67,
-    nivelAcidez: 68,
+    realizoCatacion: 40,
+    calificacionCatacion: 41,
+    notasAroma: 42,
+    nivelAcidez: 43,
 };
 
 function CalidadTaza() {
