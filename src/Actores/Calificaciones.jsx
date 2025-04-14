@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
-
-const API_ENDPOINT = 'http://localhost:3000'; 
+const API_ENDPOINT = 'http://localhost:3000/respuestasRanking'; 
 
 const PREGUNTA_IDS = {
     alturaParcela: 14,
@@ -17,8 +17,6 @@ const PREGUNTA_IDS = {
     cuidadosAgroecologicos: 22,
     procesoTueste: 23,
 };
-
-
 
 function Calificaciones() {
     const [respuestas, setRespuestas] = useState({
@@ -64,46 +62,31 @@ function Calificaciones() {
             return;
         }
 
+        const EncuestadoID = localStorage.getItem('encuestadoId');
         const dataToSend = Object.entries(respuestas)
             .map(([key, value]) => ({
                 pregunta_id: PREGUNTA_IDS[key],
-                respuesta: value 
+                respuesta: value,
+                encuestado_id: EncuestadoID
             }));
 
         console.log('Datos a enviar a la API:', dataToSend);
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataToSend)
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            if (!response.ok) {
-                let errorMessage = `Error del servidor: ${response.status} ${response.statusText}`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                } catch (jsonError) {
-                    console.error("No se pudo parsear la respuesta de error como JSON:", jsonError);
-                }
-                throw new Error(errorMessage);
-            }
+            console.log('Respuesta exitosa de la API:', response.data);
 
-            const result = await response.json();
-            console.log('Respuesta exitosa de la API:', result);
-
-          
             alert('Respuestas enviadas correctamente!');
-            
-            navigate('/'); 
+            navigate('/');
 
         } catch (err) {
             console.error('Error al enviar los datos a la API:', err);
-            setError(`Error al guardar las respuestas: ${err.message}. Por favor, inténtelo de nuevo.`);
+            const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
+            setError(`Error al guardar las respuestas: ${errorMessage}. Por favor, inténtelo de nuevo.`);
         } finally {
             setIsLoading(false);
         }
@@ -135,7 +118,6 @@ function Calificaciones() {
             </div>
         );
     }
-
 
     return (
         <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style={{ backgroundColor: baseColor }}>

@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
-// --- INICIO: Modificaciones ---
-// Define los IDs numéricos para cada grupo de envío
-const IDS_ENVIO_1 = [1, 2, 3, 4, 5, 6, 7, 11, 12, 13]; // Preguntas 1-7, 9, 10, 11 (IDs numéricos 1-7, 11, 12, 13)
-const IDS_ENVIO_2 = [8, 9, 10]; // Preguntas 8 (Lavado, Natural, Honey) (IDs numéricos 8, 9, 10)
+const IDS_ENVIO_1 = [1, 2, 3, 4, 5, 6, 7, 11, 12, 13]; 
+const IDS_ENVIO_2 = [8, 9, 10];
 
-// Define los endpoints de la API (pueden ser el mismo o diferentes)
-// Si es el mismo endpoint, asegúrate de que pueda manejar múltiples envíos parciales.
-// Si son diferentes, ajusta los nombres aquí.
-const API_ENDPOINT_ENVIO_1 = '/api/encuesta/respuestas'; // O un endpoint específico si lo tienes
-const API_ENDPOINT_ENVIO_2 = '/api/encuesta/respuestas'; // O un endpoint específico si lo tienes
-// --- FIN: Modificaciones ---
 
+const API_ENDPOINT_ENVIO_1 = 'http://localhost:3000/respuestasEscala';
+const API_ENDPOINT_ENVIO_2 = 'http://localhost:3000/respuestasPostcosecha'; 
 
 const PREGUNTA_IDS = {
     pregunta1: 1,
@@ -26,13 +21,14 @@ const PREGUNTA_IDS = {
     pregunta8Lavado: 8,
     pregunta8NaturalSeco: 9,
     pregunta8Honey: 10,
-    pregunta9: 11,  // Corresponde a la pregunta 9 del formulario (ID 11)
-    pregunta10: 12, // Corresponde a la pregunta 10 del formulario (ID 12)
-    pregunta11: 13, // Corresponde a la pregunta 11 del formulario (ID 13)
+    pregunta9: 11, 
+    pregunta10: 12, 
+    pregunta11: 13, 
 };
 
 
 function FormularioCalidadCafe() {
+    const EncuestadoID = localStorage.getItem('encuestadoId');
     const [respuestas, setRespuestas] = useState({
         pregunta1: '', pregunta2: '', pregunta3: '', pregunta4: '',
         pregunta5: '', pregunta6: '', pregunta7: '',
@@ -65,12 +61,10 @@ function FormularioCalidadCafe() {
         if (error) setError('');
     };
 
-    // --- INICIO: handleSubmit MODIFICADO ---
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError('');
 
-        // 1. Validación: Asegurarse de que todas las preguntas estén respondidas
         const todasRespondidas = Object.values(respuestas).every(respuesta => respuesta !== '');
         if (!todasRespondidas) {
             setError('Por favor, responde a todas las preguntas antes de continuar.');
@@ -79,17 +73,17 @@ function FormularioCalidadCafe() {
 
         setIsLoading(true);
 
-        // 2. Separar los datos en dos grupos
         const dataToSend1 = [];
         const dataToSend2 = [];
 
         for (const [key, value] of Object.entries(respuestas)) {
             const preguntaId = PREGUNTA_IDS[key];
-            if (!preguntaId) continue; // Saltar si la clave no está en PREGUNTA_IDS
+            if (!preguntaId) continue;
 
             const formattedData = {
                 pregunta_id: preguntaId,
-                respuesta: value
+                respuesta: value,
+                encuestado_id: EncuestadoID
             };
 
             if (IDS_ENVIO_1.includes(preguntaId)) {
@@ -103,63 +97,31 @@ function FormularioCalidadCafe() {
         console.log('Datos a enviar (Envío 2):', dataToSend2);
 
         try {
-            // 3. Realizar el primer envío
             console.log(`Enviando primer lote a ${API_ENDPOINT_ENVIO_1}`);
-            const response1 = await fetch(API_ENDPOINT_ENVIO_1, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend1)
+            const response1 = await axios.post(API_ENDPOINT_ENVIO_1, dataToSend1, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            if (!response1.ok) {
-                let errorMessage = `Error en el primer envío (${response1.status}): ${response1.statusText}`;
-                try {
-                    const errorData = await response1.json();
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                } catch (jsonError) { /* Ignorar si no se puede parsear */ }
-                throw new Error(`Error en el primer envío: ${errorMessage}`); // Detiene la ejecución aquí
-            }
+            console.log('Respuesta exitosa (Envío 1):', response1.data);
 
-            const result1 = await response1.json();
-            console.log('Respuesta exitosa (Envío 1):', result1);
-
-            // 4. Realizar el segundo envío SI el primero fue exitoso
             console.log(`Enviando segundo lote a ${API_ENDPOINT_ENVIO_2}`);
-            const response2 = await fetch(API_ENDPOINT_ENVIO_2, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend2)
+            const response2 = await axios.post(API_ENDPOINT_ENVIO_2, dataToSend2, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            if (!response2.ok) {
-                let errorMessage = `Error en el segundo envío (${response2.status}): ${response2.statusText}`;
-                try {
-                    const errorData = await response2.json();
-                    errorMessage = errorData.message || JSON.stringify(errorData);
-                } catch (jsonError) { /* Ignorar si no se puede parsear */ }
-                 // Aunque el primer envío fue exitoso, el segundo falló.
-                throw new Error(`Error en el segundo envío: ${errorMessage}`);
-            }
+            console.log('Respuesta exitosa (Envío 2):', response2.data);
 
-            const result2 = await response2.json();
-            console.log('Respuesta exitosa (Envío 2):', result2);
-
-            // 5. Navegar SI AMBOS envíos fueron exitosos
             console.log("Ambos envíos exitosos. Navegando...");
             navigate('/calificaciones');
 
         } catch (err) {
-            // Captura errores de CUALQUIERA de los fetch o del procesamiento
             console.error('Error durante el envío de datos:', err);
-            // Muestra el mensaje de error específico del envío que falló
-            setError(`Error al guardar las respuestas: ${err.message}. Por favor, inténtelo de nuevo.`);
+            const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
+            setError(`Error al guardar las respuestas: ${errorMessage}. Por favor, inténtelo de nuevo.`);
         } finally {
-            // 6. Quitar el estado de carga independientemente del resultado
             setIsLoading(false);
         }
     };
-    // --- FIN: handleSubmit MODIFICADO ---
-
 
     const renderRadioButtons = (nombrePregunta) => (
         opcionesCalificacion.map(opcion => (
@@ -184,11 +146,9 @@ function FormularioCalidadCafe() {
 
      const renderPreguntaLabel = (numeroPreguntaONombre) => {
         const idNumerico = PREGUNTA_IDS[numeroPreguntaONombre] || '';
-        // Ajustar para usar el ID numérico correcto en el texto mostrado
         const prefijo = idNumerico ? `${idNumerico}.- ` : '';
 
         switch (numeroPreguntaONombre) {
-            // ... (el resto de tus casos 'case' para las etiquetas van aquí, sin cambios)
             case 'pregunta1': return `${prefijo}El impacto la altura de la zona en donde se ubica el cafetal, para lograr la calidad en taza de café:`;
             case 'pregunta2': return `${prefijo}El impacto de la temperatura en promedio, de la zona en donde se ubica el cafetal, para lograr la calidad en taza de café:`;
             case 'pregunta3': return `${prefijo}El impacto del promedio de lluvia anual en la zona en donde se ubica el cafetal, para lograr la calidad en taza de café:`;
@@ -216,8 +176,6 @@ function FormularioCalidadCafe() {
         fontSize: 'clamp(0.7rem, 1.2vw, 0.85rem)'
     });
 
-    // El resto del componente (return con el JSX) permanece igual que antes
-    // ... (todo el JSX desde <div className="container-fluid..."> hasta el final) ...
      return (
         <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style={{ backgroundColor: baseColor }}>
             <div className="card shadow-lg border-0" style={{ width: '100%', maxWidth: '85%', overflowX: 'hidden' }}>
