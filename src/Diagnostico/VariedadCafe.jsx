@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    inicioOperaciones: 6,
-    cosechoUltimoCiclo: 7,
-    extensionParcela: 8,
-    variedadesCultivadas: 9,
-    produccionKgSeco: 10,
-    edadCafeto: 11,
-    conoceNumPlantas: 12,
-    cantidadPlantas: 13,
+    inicioOperaciones: 1,
+    cosechoUltimoCiclo: 2,
+    extensionParcela: 3,
+    variedadesCultivadas: 4,
+    produccionKgSeco: 5,
+    edadCafeto: 6,
+    conoceNumPlantas: 7,
+    cantidadPlantas: 8
 };
 
 function VariedadCafe() {
@@ -118,15 +119,11 @@ function VariedadCafe() {
         setIsLoading(true);
 
          try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (VariedadCafe):', result);
+            console.log('API Response (VariedadCafe):', response.data);
             navigate('/siembracaracteristicas'); 
 
         } catch (err) {

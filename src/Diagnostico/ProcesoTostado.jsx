@@ -5,8 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    realizaTueste: 38,
-    tipoTueste: 39,
+    realizaTueste: 33,
+    tipoTueste: 34,
 };
 
 function ProcesoTostado() {

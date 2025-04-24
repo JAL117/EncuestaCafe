@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
-const API_ENDPOINT = 'TU_API_ENDPOINT'; 
-
-const PREGUNTA_IDS = {
-    nombreProductor: 1,
-    municipio: 2,
-    localidad: 3,
-    perteneceGrupo: 4,
-    nombreGrupo: 5,
-};
+const API_ENDPOINT = 'http://localhost:3000'; 
 
 function ProductorInfo() {
     const [formData, setFormData] = useState({
@@ -56,28 +49,24 @@ function ProductorInfo() {
             return;
         }
 
-        const dataToSend = Object.entries(formData)
-            .filter(([key, value]) => value !== null && value !== '' && PREGUNTA_IDS[key] !== undefined) 
-            .map(([key, value]) => ({
-                pregunta_id: PREGUNTA_IDS[key],
-                respuesta: String(value), 
-            }));
+        const dataToSend = {
+            nombreProductor: formData.nombreProductor,
+            municipio: formData.municipio,
+            localidad: formData.localidad,
+            perteneceGrupo: formData.perteneceGrupo,
+            nombreGrupo: formData.perteneceGrupo === 'si' ? formData.nombreGrupo : null,
+        };
 
         console.log('Datos a enviar (ProductorInfo):', dataToSend);
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(`${API_ENDPOINT}/productores`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (ProductorInfo):', result);
-            navigate('/variedadcafe'); 
-
+            console.log('API Response (ProductorInfo):', response.data);
+            navigate('/variedadcafe');
         } catch (err) {
             console.error('API Error (ProductorInfo):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);
@@ -100,20 +89,20 @@ function ProductorInfo() {
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <label htmlFor="nombreProductor" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>{PREGUNTA_IDS.nombreProductor}.- Nombre del Productor/a:</label>
+                            <label htmlFor="nombreProductor" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>Nombre del Productor/a:</label>
                             <input type="text" className="form-control" id="nombreProductor" name="nombreProductor" value={formData.nombreProductor} onChange={handleChange} disabled={isLoading} />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="municipio" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>{PREGUNTA_IDS.municipio}.- Municipio al que pertenece:</label>
+                            <label htmlFor="municipio" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>Municipio al que pertenece:</label>
                             <input type="text" className="form-control" id="municipio" name="municipio" value={formData.municipio} onChange={handleChange} disabled={isLoading} />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="localidad" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>{PREGUNTA_IDS.localidad}.- Localidad:</label>
+                            <label htmlFor="localidad" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>Localidad:</label>
                             <input type="text" className="form-control" id="localidad" name="localidad" value={formData.localidad} onChange={handleChange} disabled={isLoading} />
                         </div>
 
                         <div className="mb-3">
-                             <label className="form-label d-block" style={{ color: primaryColor, fontWeight: 'bold' }}>{PREGUNTA_IDS.perteneceGrupo}.- Pertenece algún grupo social:</label>
+                             <label className="form-label d-block" style={{ color: primaryColor, fontWeight: 'bold' }}>Pertenece algún grupo social:</label>
                              <div className="form-check form-check-inline">
                                  <input className="form-check-input" type="radio" name="perteneceGrupo" id="grupoSi" value="si" checked={formData.perteneceGrupo === 'si'} onChange={handleChange} disabled={isLoading} />
                                  <label className="form-check-label" htmlFor="grupoSi">Si</label>
@@ -126,7 +115,7 @@ function ProductorInfo() {
 
                         {formData.perteneceGrupo === 'si' && (
                              <div className="mb-3">
-                                 <label htmlFor="nombreGrupo" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>{PREGUNTA_IDS.nombreGrupo}.- Si, la respuesta anterior fue positiva, ¿A qué grupo social pertenece?</label>
+                                 <label htmlFor="nombreGrupo" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>Si, la respuesta anterior fue positiva, ¿A qué grupo social pertenece?</label>
                                  <input type="text" className="form-control" id="nombreGrupo" name="nombreGrupo" value={formData.nombreGrupo} onChange={handleChange} disabled={isLoading} />
                              </div>
                         )}

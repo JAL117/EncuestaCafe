@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    tratamientoCereza: 29,
-    tratamientoOtro: 30, 
-    fermentacionLavados: 31, 
+    tratamientoCereza: 24,
+    tratamientoOtro: 25, 
+    fermentacionLavados: 26, 
 };
 
 function LavadoFermentacion() {
@@ -98,15 +99,11 @@ function LavadoFermentacion() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Lavado/Fermentacion):', result);
+            console.log('API Response (Lavado/Fermentacion):', response.data);
             navigate('/procesolavado'); 
         } catch (err) {
             console.error('API Error (Lavado/Fermentacion):', err);

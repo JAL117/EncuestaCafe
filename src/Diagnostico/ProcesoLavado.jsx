@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    numeroLavados: 32,
+    numeroLavados: 27,
 };
 
 function ProcesoLavado() {
@@ -41,17 +42,12 @@ function ProcesoLavado() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Proceso Lavado):', result);
-            navigate('/procesosecado'); 
-
+            console.log('API Response (Proceso Lavado):', response.data);
+            navigate('/procesosecado');
         } catch (err) {
             console.error('API Error (Proceso Lavado):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);

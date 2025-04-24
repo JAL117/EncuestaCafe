@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT';
 
 const PREGUNTA_IDS = {
-    realizaDescascarillado: 36,
-    descripcionAlmacenamiento: 37,
+    realizaDescascarillado: 31,
+    descripcionAlmacenamiento: 32,
 };
 
 function Almacenamiento() {
@@ -52,7 +53,6 @@ function Almacenamiento() {
             return;
         }
 
-      
         const dataToSend = [];
         const addData = (key, value) => {
              if (value !== null && value !== '' && PREGUNTA_IDS[key]) {
@@ -65,22 +65,16 @@ function Almacenamiento() {
         const descResp = Object.entries(formData.descripcionAlmacenamiento).filter(([_,v])=>v).map(([k,_])=>k).join(', ');
         if(descResp) addData('descripcionAlmacenamiento', descResp);
 
-
         console.log('Datos a enviar (Almacenamiento):', dataToSend);
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Almacenamiento):', result);
+            console.log('API Response (Almacenamiento):', response.data);
             navigate('/procesotostado');
-
         } catch (err) {
             console.error('API Error (Almacenamiento):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);

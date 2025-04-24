@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; 
+
 const PREGUNTA_IDS = {
-    metodoSecado: 33,
-    metodoSecadoOtro: 34, 
-    descripcionSecado: 35,
+    metodoSecado: 28,
+    metodoSecadoOtro: 29, 
+    descripcionSecado: 30,
 };
 
 function ProcesoSecado() {
@@ -83,17 +85,12 @@ function ProcesoSecado() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Secado):', result);
-            navigate('/almacenamiento'); 
-
+            console.log('API Response (Secado):', response.data);
+            navigate('/almacenamiento');
         } catch (err) {
             console.error('API Error (Secado):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);

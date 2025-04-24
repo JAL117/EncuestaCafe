@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    practicasCafetal: 14,
-    analisisSuelos: 15,
-    monitoreoPlagas: 16,
-    tipoSombra: 17,
-    recursosPlantaciones: 18,
-    recursosOtro: 19,
-    historialEnfermedadesAnteriorSiNo: 20,
-    historialEnfermedadesUltimaSiNo: 21,
-    enfermedadPlagaAnterior: 22,
-    controlAnterior: 23,
-    enfermedadPlagaUltima: 24,
-    controlUltima: 25,
-    tipoArbolesSombra: 26,
+    practicasCafetal: 9,
+    analisisSuelos: 10,
+    monitoreoPlagas: 11,
+    tipoSombra: 12,
+    recursosPlantaciones: 13,
+    recursosOtro: 14,
+    historialEnfermedadesAnteriorSiNo: 15,
+    historialEnfermedadesUltimaSiNo: 16,
+    enfermedadPlagaAnterior: 17,
+    controlAnterior: 18,
+    enfermedadPlagaUltima: 19,
+    controlUltima: 20,
+    tipoArbolesSombra: 21,
 };
 
 function SiembraCaracteristicas() {
@@ -142,15 +143,11 @@ function SiembraCaracteristicas() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Siembra):', result);
+            console.log('API Response (Siembra):', response.data);
             navigate('/cosechacaracteristicas');
         } catch (err) {
             console.error('API Error (Siembra):', err);

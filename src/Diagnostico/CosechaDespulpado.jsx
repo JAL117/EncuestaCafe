@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    recolectaClasificacion: 27,
-    procesoDespulpado: 28,
+    recolectaClasificacion: 22,
+    procesoDespulpado: 23,
 };
 
 function CosechaDespulpado() {
@@ -35,7 +36,7 @@ function CosechaDespulpado() {
          if (error) setError('');
     };
 
-     const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -47,7 +48,6 @@ function CosechaDespulpado() {
              return;
         }
 
-      
         const dataToSend = [];
          const addData = (key, group) => {
              const resp = Object.entries(formData[group]).filter(([_,v])=>v).map(([k,_])=>k).join(', ');
@@ -63,17 +63,12 @@ function CosechaDespulpado() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Cosecha/Despulpado):', result);
+            console.log('API Response (Cosecha/Despulpado):', response.data);
             navigate('/lavadofermentacion');
-
         } catch (err) {
             console.error('API Error (Cosecha/Despulpado):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);

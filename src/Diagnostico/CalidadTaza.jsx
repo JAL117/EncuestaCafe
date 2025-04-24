@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
-    realizoCatacion: 40,
-    calificacionCatacion: 41,
-    notasAroma: 42,
-    nivelAcidez: 43,
+    realizoCatacion: 35,
+    calificacionCatacion: 36,
+    notasAroma: 37,
+    nivelAcidez: 38,
 };
 
 function CalidadTaza() {
@@ -106,19 +107,13 @@ function CalidadTaza() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
+            const response = await axios.post(API_ENDPOINT, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
             });
 
-            if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
-            const result = await response.json();
-            console.log('API Response (Calidad Taza):', result);
+            console.log('API Response (Calidad Taza):', response.data);
             alert('Encuesta completada y enviada. ¡Muchas gracias!');
-            
             navigate('/');
-
         } catch (err) {
             console.error('API Error (Calidad Taza):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);
