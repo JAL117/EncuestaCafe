@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
+const API_ENDPOINT = 'http://localhost:3000'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
     realizaTueste: 33,

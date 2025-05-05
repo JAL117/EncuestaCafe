@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-const API_ENDPOINT = 'TU_API_ENDPOINT'; // <-- REEMPLAZA ESTO
+const API_ENDPOINT = 'http://localhost:3000'; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
     practicasCafetal: 9,
