@@ -68,7 +68,7 @@ function ProcesoSecado() {
         const dataToSend = [];
         const addData = (key, value) => {
              if (value !== null && value !== '' && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value) });
+                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value),  productor_id: localStorage.getItem('currentProductorId')});
              }
         };
 
@@ -85,7 +85,7 @@ function ProcesoSecado() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_ENDPOINT, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/secado`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 

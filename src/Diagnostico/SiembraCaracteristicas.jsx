@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -24,7 +24,7 @@ const PREGUNTA_IDS = {
 function SiembraCaracteristicas() {
     const [formData, setFormData] = useState({
         practicasCafetal: { prepSuelo: false, siembraSem: false, trasplante: false },
-        analisisSuelos: null, // 'si' o 'no'
+        analisisSuelos: null,
         monitoreoPlagas: null, 
         tipoSombra: '',
         recursosPlantaciones: { fertilizacionQuimica: false, abonosOrganicos: false, herbicidas: false, otro: false },
@@ -40,6 +40,7 @@ function SiembraCaracteristicas() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [productorId, setProductorId] = useState(null);
 
     const primaryColor = '#0B9785';
     const secondaryColor = '#BF1029';
@@ -84,6 +85,14 @@ function SiembraCaracteristicas() {
         if (error) setError('');
     };
 
+        useEffect(() => {
+            const id = localStorage.getItem('currentProductorId');
+            if (!id) {
+                navigate('/');
+                return;
+            }
+            setProductorId(id);
+        }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -115,7 +124,7 @@ function SiembraCaracteristicas() {
         
         const addData = (key, value) => {
              if (value !== null && value !== '' && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value) });
+                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value), productorId });
              }
         };
 
@@ -143,12 +152,12 @@ function SiembraCaracteristicas() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_ENDPOINT, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/siembraCaracteristicas`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 
             console.log('API Response (Siembra):', response.data);
-            navigate('/cosechacaracteristicas');
+            navigate('/cosechadespulpado');
         } catch (err) {
             console.error('API Error (Siembra):', err);
             setError(`Error al guardar: ${err.message}. Intente de nuevo.`);

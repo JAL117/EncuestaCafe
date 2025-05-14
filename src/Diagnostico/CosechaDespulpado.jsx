@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -18,6 +18,7 @@ function CosechaDespulpado() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [productorId, setProductorId] = useState(null);
 
     const primaryColor = '#0B9785';
     const secondaryColor = '#BF1029';
@@ -36,6 +37,15 @@ function CosechaDespulpado() {
          if (error) setError('');
     };
 
+    useEffect(() => {
+        const id = localStorage.getItem('currentProductorId');
+        if (!id) {
+            navigate('/'); // Redirige si no hay productorId
+            return;
+        }
+        setProductorId(id);
+    }, [navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -52,7 +62,7 @@ function CosechaDespulpado() {
          const addData = (key, group) => {
              const resp = Object.entries(formData[group]).filter(([_,v])=>v).map(([k,_])=>k).join(', ');
              if(resp && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: resp });
+                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: resp, productorId });
              }
         };
 
@@ -63,7 +73,7 @@ function CosechaDespulpado() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_ENDPOINT, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/cosechaDespulpado`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 

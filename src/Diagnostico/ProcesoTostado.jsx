@@ -54,7 +54,7 @@ function ProcesoTostado() {
         const dataToSend = [];
         const addData = (key, value) => {
              if (value !== null && value !== '' && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value) });
+                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value),  productor_id: localStorage.getItem('currentProductorId') });
              }
         };
 
@@ -67,7 +67,7 @@ function ProcesoTostado() {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINT, {
+            const response = await fetch(`${API_ENDPOINT}/tostado`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dataToSend),
@@ -76,7 +76,7 @@ function ProcesoTostado() {
             if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
             const result = await response.json();
             console.log('API Response (Tostado):', result);
-            navigate('/calidad-taza'); 
+            navigate('/calidadtaza'); 
 
         } catch (err) {
             console.error('API Error (Tostado):', err);
