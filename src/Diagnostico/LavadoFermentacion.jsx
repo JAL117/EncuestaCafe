@@ -78,9 +78,10 @@ function LavadoFermentacion() {
 
         // Preparar datos
         const dataToSend = [];
+        const currentProductorId = localStorage.getItem('currentProductorId');
         const addData = (key, value) => {
              if (value !== null && value !== '' && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value) });
+                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: String(value), productor_id: parseInt(currentProductorId, 10) });
              }
         };
 
@@ -99,7 +100,7 @@ function LavadoFermentacion() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_ENDPOINT, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/lavadoFerm`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 

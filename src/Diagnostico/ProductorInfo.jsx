@@ -70,12 +70,14 @@ function ProductorInfo() {
             return;
         }
 
+        const currentProductorId = localStorage.getItem('currentProductorId');
         const dataToSend = {
             nombreProductor: formData.nombreProductor,
             municipio: formData.municipio === 'Otro' ? formData.otroMunicipio : formData.municipio,
             localidad: formData.localidad,
             perteneceGrupo: formData.perteneceGrupo,
             nombreGrupo: formData.nombreGrupo ? formData.nombreGrupo : null,
+            productor_id: currentProductorId ? parseInt(currentProductorId, 10) : undefined,
         };
 
         console.log('Datos a enviar (ProductorInfo):', dataToSend);

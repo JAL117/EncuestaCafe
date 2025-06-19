@@ -33,16 +33,18 @@ function ProcesoLavado() {
             return;
         }
 
-        const dataToSend = [{
+        const currentProductorId = localStorage.getItem('currentProductorId');
+        const dataToSend = {
             pregunta_id: PREGUNTA_IDS.numeroLavados,
             respuesta: numeroLavados,
-        }];
+            productor_id: parseInt(currentProductorId, 10),
+        };
 
         console.log('Datos a enviar (Proceso Lavado):', dataToSend);
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_ENDPOINT, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/procesoLavado`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 

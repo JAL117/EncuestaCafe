@@ -352,36 +352,35 @@ function CosechaDespulpado() {
     }
 
     const dataToSend = [];
-    const productorId = localStorage.getItem("currentProductorId");
+    const currentProductorId = localStorage.getItem('currentProductorId');
 
     const addData = (key, group) => {
-      const respuestas = [];
-
-      Object.entries(formData[group]).forEach(([k, v]) => {
-        if (v) {
-          if (group === "recolectaClasificacion" && k === "desinfeccion") {
-            let desinfeccionText = "Realiza desinfección";
-            if (formData.desinfeccionCual.trim()) {
-              desinfeccionText += `: ${formData.desinfeccionCual.trim()}`;
-            }
-            respuestas.push(desinfeccionText);
-          } else {
-            respuestas.push(k);
-          }
-        }
-      });
-
-      if (respuestas.length && PREGUNTA_IDS[key]) {
+      const resp = Object.entries(formData[group])
+        .filter(([_, v]) => v)
+        .map(([k, _]) => k)
+        .join(", ");
+      if (resp && PREGUNTA_IDS[key]) {
         dataToSend.push({
-          productorId,
+          productor_id: parseInt(currentProductorId, 10),
           pregunta_id: PREGUNTA_IDS[key],
-          respuesta: respuestas.join(", "),
+          respuesta: resp,
         });
       }
     };
 
     addData("recolectaClasificacion", "recolectaClasificacion");
     addData("procesoDespulpado", "procesoDespulpado");
+
+    if (
+      formData.recolectaClasificacion.desinfeccion &&
+      formData.desinfeccionCual?.trim()
+    ) {
+      dataToSend.push({
+        productor_id: parseInt(currentProductorId, 10),
+        pregunta_id: 999, // ID real de "¿Cuál desinfección?"
+        respuesta: formData.desinfeccionCual.trim(),
+      });
+    }
 
     console.log("Datos a enviar (Cosecha/Despulpado):", dataToSend);
     setIsLoading(true);

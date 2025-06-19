@@ -133,7 +133,8 @@ function VariedadCafe() {
             }
             dataToSend.respuestas.push({
                 pregunta_id: PREGUNTA_IDS.variedadesCultivadas,
-                respuesta: respuestaVariedades
+                respuesta: respuestaVariedades,
+                productor_id: parseInt(productorId, 10),
             });
         }
 
@@ -141,7 +142,10 @@ function VariedadCafe() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(`${API_ENDPOINT}/variedadCafe`, dataToSend, {
+            const response = await axios.post(`${API_ENDPOINT}/variedadCafe`, {
+                productor_id: parseInt(productorId, 10),
+                ...dataToSend
+            }, {
                 headers: { 'Content-Type': 'application/json' },
             });
 
