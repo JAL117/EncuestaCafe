@@ -3,291 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-// const API_ENDPOINT = "http://localhost:3000"; // <-- REEMPLAZA ESTO
-
-// const PREGUNTA_IDS = {
-//   recolectaClasificacion: 22,
-//   procesoDespulpado: 23,
-// };
-
-// function CosechaDespulpado() {
-//   const [formData, setFormData] = useState({
-//     recolectaClasificacion: {
-//       corteOptimo: false,
-//       clasificaColor: false,
-//       clasificaHidro: false,
-//       desinfeccion: false,
-//     },
-//     desinfeccion: "",
-//     procesoDespulpado: {
-//       pesaCereza: false,
-//       usaDespulpadora: false,
-//       lavaDespulpadora: false,
-//       usaCubetasLimpias: false,
-//       mideKgDespulpado: false,
-//     },
-//   });
-//   const [error, setError] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-//   const navigate = useNavigate();
-
-//   const primaryColor = "#0B9785";
-//   const secondaryColor = "#BF1029";
-//   const baseColor = "#E0E4E4";
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//     if (error) setError("");
-//   };
-
-//   const handleCheckboxChange = (e) => {
-//     const { name, checked, dataset } = e.target;
-//     const group = dataset.group;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [group]: {
-//         ...prev[group],
-//         [name]: checked,
-//       },
-//     }));
-//     if (error) setError("");
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-
-//     const recolectaSelected = Object.values(
-//       formData.recolectaClasificacion
-//     ).some((v) => v);
-//     const despulpadoSelected = Object.values(formData.procesoDespulpado).some(
-//       (v) => v
-//     );
-
-//     if (!recolectaSelected || !despulpadoSelected) {
-//       setError(
-//         "Por favor, marque al menos una opción en cada sección (recolecta y despulpado)."
-//       );
-//       return;
-//     }
-
-
-//     const productorId = localStorage.getItem("currentProductorId");
-
-//     // Agregar datos de recolectaClasificacion
-
-//     if (
-//       formData.recolectaClasificacion.desinfeccion &&
-//       formData.desinfeccionCual.trim()
-//     ) {
-//       dataToSend.push({
-//         pregunta_id: 22, // Usa un ID adecuado si ya lo tienes en la BD
-//         respuesta: formData.desinfeccionCual.trim(),
-//         productorId: localStorage.getItem("currentProductorId"),
-//       });
-//     }
-
-//     const dataToSend = [];
-//     const addData = (key, group) => {
-//       const resp = Object.entries(formData[group])
-//         .filter(([_, v]) => v)
-//         .map(([k, _]) => k)
-//         .join(", ");
-//       if (resp && PREGUNTA_IDS[key]) {
-//         dataToSend.push({
-//           productorId,
-//           pregunta_id: PREGUNTA_IDS[key],
-//           respuesta: resp,
-//         });
-//       }
-//     };
-
-//     addData("recolectaClasificacion", "recolectaClasificacion");
-//     addData("procesoDespulpado", "procesoDespulpado");
-
-//     if (
-//       formData.recolectaClasificacion.desinfeccion &&
-//       formData.desinfeccionCual?.trim()
-//     ) {
-//       dataToSend.push({
-//         productorId,
-//         pregunta_id: 999, // ID real de "¿Cuál desinfección?"
-//         respuesta: formData.desinfeccionCual.trim(),
-//       });
-//     }
-
-//     console.log("Datos a enviar (Cosecha/Despulpado):", dataToSend);
-//     setIsLoading(true);
-
-//     try {
-//       const response = await axios.post(API_ENDPOINT, dataToSend, {
-//         headers: { "Content-Type": "application/json" },
-//       });
-
-//       console.log("API Response (Cosecha/Despulpado):", response.data);
-//       navigate("/lavadofermentacion");
-//     } catch (err) {
-//       console.error("API Error (Cosecha/Despulpado):", err);
-//       setError(`Error al guardar: ${err.message}. Intente de nuevo.`);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   const recolectaOptions = {
-//     corteOptimo: "Corta sólo las cerezas con un grado de maduración óptima.",
-//     clasificaColor: "Clasifica las cerezas por color",
-//     clasificaHidro: "Realiza clasificación hidrostática",
-//     desinfeccion: "Realiza desinfección",
-//   };
-//   const despulpadoOptions = {
-//     pesaCereza: "Pesa usted las cerezas que va a despulpar",
-//     usaDespulpadora: "Utiliza una despulpadora",
-//     lavaDespulpadora: "Lava la despulpadora antes y después del despulpe",
-//     usaCubetasLimpias:
-//       "Utiliza cubetas o tambos limpios para colocar el café despulpado",
-//     mideKgDespulpado:
-//       "Realiza una medición en kilogramos del café resultado del despulpe",
-//   };
-
-//   return (
-//     <div
-//       className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4"
-//       style={{ backgroundColor: baseColor }}
-//     >
-//       <div
-//         className="card shadow-lg border-0"
-//         style={{ width: "100%", maxWidth: "75%" }}
-//       >
-//         <div
-//           className="card-body"
-//           style={{ background: baseColor, padding: "30px 25px" }}
-//         >
-//           <h4
-//             className="card-title text-center mb-4"
-//             style={{ color: primaryColor }}
-//           >
-//             Caracterización de Cosecha y Despulpado
-//           </h4>
-
-//           {error && (
-//             <div
-//               className="alert alert-danger"
-//               role="alert"
-//               style={{ borderRadius: "15px" }}
-//             >
-//               {error}
-//             </div>
-//           )}
-
-//           <form onSubmit={handleSubmit}>
-//             <div className="mb-4">
-//               <label
-//                 className="form-label d-block"
-//                 style={{ color: primaryColor, fontWeight: "bold" }}
-//               >
-//                 {PREGUNTA_IDS.recolectaClasificacion}.- ¿Cómo se realiza la
-//                 recolecta y la clasificación de la cereza? Marque lo que realiza
-//               </label>
-//               {Object.entries(recolectaOptions).map(([key, label]) => (
-//                 <div className="form-check" key={key}>
-//                   <input
-//                     className="form-check-input"
-//                     type="checkbox"
-//                     name={key}
-//                     id={`recolecta_${key}`}
-//                     data-group="recolectaClasificacion"
-//                     checked={formData.recolectaClasificacion[key]}
-//                     onChange={handleCheckboxChange}
-//                     disabled={isLoading}
-//                   />
-//                   <label
-//                     className="form-check-label"
-//                     htmlFor={`recolecta_${key}`}
-//                   >
-//                     {label}
-//                   </label>
-//                 </div>
-//               ))}
-
-//               {/* Mostrar el input de ¿Cuál? solo si está marcada la opción de desinfección */}
-//               {formData.recolectaClasificacion.desinfeccion && (
-//                 <div className="mt-2">
-//                   <input
-//                     type="text"
-//                     className="form-control"
-//                     placeholder="¿Cuál?"
-//                     name="desinfeccionCual"
-//                     value={formData.desinfeccionCual || ""}
-//                     onChange={handleChange}
-//                     disabled={isLoading}
-//                   />
-//                 </div>
-//               )}
-//             </div>
-
-//             <div className="mb-3">
-//               <label
-//                 className="form-label d-block"
-//                 style={{ color: primaryColor, fontWeight: "bold" }}
-//               >
-//                 {PREGUNTA_IDS.procesoDespulpado}.- Describa como realiza el
-//                 despulpado: Marque lo que realiza
-//               </label>
-//               {Object.entries(despulpadoOptions).map(([key, label]) => (
-//                 <div className="form-check" key={key}>
-//                   <input
-//                     className="form-check-input"
-//                     type="checkbox"
-//                     name={key}
-//                     id={`despulpado_${key}`}
-//                     data-group="procesoDespulpado"
-//                     checked={formData.procesoDespulpado[key]}
-//                     onChange={handleCheckboxChange}
-//                     disabled={isLoading}
-//                   />
-//                   <label
-//                     className="form-check-label"
-//                     htmlFor={`despulpado_${key}`}
-//                   >
-//                     {label}
-//                   </label>
-//                 </div>
-//               ))}
-//             </div>
-
-//             <div className="d-flex justify-content-center mt-4">
-//               <button
-//                 type="submit"
-//                 className="btn btn-lg px-4"
-//                 style={{
-//                   background: secondaryColor,
-//                   color: "white",
-//                   borderRadius: "25px",
-//                   fontWeight: "bold",
-//                 }}
-//                 disabled={isLoading}
-//               >
-//                 {isLoading ? "Guardando..." : "Siguiente"}
-//               </button>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default CosechaDespulpado;
-
-
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
-
-const API_ENDPOINT = "http://localhost:3000"; // <-- AJUSTA si es necesario
+const API_ENDPOINT = "http://localhost:3000"; // <-- REEMPLAZA ESTO
 
 const PREGUNTA_IDS = {
   recolectaClasificacion: 22,
@@ -295,14 +11,25 @@ const PREGUNTA_IDS = {
 };
 
 function CosechaDespulpado() {
-    const [formData, setFormData] = useState({
-        recolectaClasificacion: { corteOptimo: false, clasificaColor: false, clasificaHidro: false, desinfeccion: false },
-        procesoDespulpado: { pesaCereza: false, usaDespulpadora: false, lavaDespulpadora: false, usaCubetasLimpias: false, mideKgDespulpado: false },
-    });
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
-    const [productorId, setProductorId] = useState(null);
+  const [formData, setFormData] = useState({
+    recolectaClasificacion: {
+      corteOptimo: false,
+      clasificaColor: false,
+      clasificaHidro: false,
+      desinfeccion: false,
+    },
+    desinfeccion: "",
+    procesoDespulpado: {
+      pesaCereza: false,
+      usaDespulpadora: false,
+      lavaDespulpadora: false,
+      usaCubetasLimpias: false,
+      mideKgDespulpado: false,
+    },
+  });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const primaryColor = "#0B9785";
   const secondaryColor = "#BF1029";
@@ -314,63 +41,94 @@ function CosechaDespulpado() {
     if (error) setError("");
   };
 
-    const handleCheckboxChange = (e) => {
-        const { name, checked, dataset } = e.target;
-        const group = dataset.group; 
-        setFormData(prev => ({
-            ...prev,
-            [group]: {
-                ...prev[group],
-                [name]: checked,
-            }
-        }));
-         if (error) setError('');
-    };
-
-    useEffect(() => {
-        const id = localStorage.getItem('currentProductorId');
-        if (!id) {
-            navigate('/'); // Redirige si no hay productorId
-            return;
-        }
-        setProductorId(id);
-    }, [navigate]);
+  const handleCheckboxChange = (e) => {
+    const { name, checked, dataset } = e.target;
+    const group = dataset.group;
+    setFormData((prev) => ({
+      ...prev,
+      [group]: {
+        ...prev[group],
+        [name]: checked,
+      },
+    }));
+    if (error) setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    const recolectaSelected = Object.values(formData.recolectaClasificacion).some((v) => v);
-    const despulpadoSelected = Object.values(formData.procesoDespulpado).some((v) => v);
+    const recolectaSelected = Object.values(
+      formData.recolectaClasificacion
+    ).some((v) => v);
+    const despulpadoSelected = Object.values(formData.procesoDespulpado).some(
+      (v) => v
+    );
 
     if (!recolectaSelected || !despulpadoSelected) {
-      setError("Por favor, marque al menos una opción en cada sección.");
+      setError(
+        "Por favor, marque al menos una opción en cada sección (recolecta y despulpado)."
+      );
       return;
     }
 
-        const dataToSend = [];
-         const addData = (key, group) => {
-             const resp = Object.entries(formData[group]).filter(([_,v])=>v).map(([k,_])=>k).join(', ');
-             if(resp && PREGUNTA_IDS[key]) {
-                 dataToSend.push({ pregunta_id: PREGUNTA_IDS[key], respuesta: resp, productorId });
-             }
-        };
+
+    const productorId = localStorage.getItem("currentProductorId");
+
+    // Agregar datos de recolectaClasificacion
+
+    if (
+      formData.recolectaClasificacion.desinfeccion &&
+      formData.desinfeccionCual.trim()
+    ) {
+      dataToSend.push({
+        pregunta_id: 22, // Usa un ID adecuado si ya lo tienes en la BD
+        respuesta: formData.desinfeccionCual.trim(),
+        productorId: localStorage.getItem("currentProductorId"),
+      });
+    }
+
+    const dataToSend = [];
+    const addData = (key, group) => {
+      const resp = Object.entries(formData[group])
+        .filter(([_, v]) => v)
+        .map(([k, _]) => k)
+        .join(", ");
+      if (resp && PREGUNTA_IDS[key]) {
+        dataToSend.push({
+          productorId,
+          pregunta_id: PREGUNTA_IDS[key],
+          respuesta: resp,
+        });
+      }
+    };
 
     addData("recolectaClasificacion", "recolectaClasificacion");
     addData("procesoDespulpado", "procesoDespulpado");
 
+    if (
+      formData.recolectaClasificacion.desinfeccion &&
+      formData.desinfeccionCual?.trim()
+    ) {
+      dataToSend.push({
+        productorId,
+        pregunta_id: 999, // ID real de "¿Cuál desinfección?"
+        respuesta: formData.desinfeccionCual.trim(),
+      });
+    }
+
     console.log("Datos a enviar (Cosecha/Despulpado):", dataToSend);
     setIsLoading(true);
 
-        try {
-            const response = await axios.post(`${API_ENDPOINT}/cosechaDespulpado`, dataToSend, {
-                headers: { 'Content-Type': 'application/json' },
-            });
+    try {
+      const response = await axios.post(API_ENDPOINT, dataToSend, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-      console.log("API Response:", response.data);
+      console.log("API Response (Cosecha/Despulpado):", response.data);
       navigate("/lavadofermentacion");
     } catch (err) {
-      console.error("API Error:", err);
+      console.error("API Error (Cosecha/Despulpado):", err);
       setError(`Error al guardar: ${err.message}. Intente de nuevo.`);
     } finally {
       setIsLoading(false);
@@ -383,34 +141,54 @@ function CosechaDespulpado() {
     clasificaHidro: "Realiza clasificación hidrostática",
     desinfeccion: "Realiza desinfección",
   };
-
   const despulpadoOptions = {
     pesaCereza: "Pesa usted las cerezas que va a despulpar",
     usaDespulpadora: "Utiliza una despulpadora",
     lavaDespulpadora: "Lava la despulpadora antes y después del despulpe",
-    usaCubetasLimpias: "Utiliza cubetas o tambos limpios para colocar el café despulpado",
-    mideKgDespulpado: "Realiza una medición en kilogramos del café resultado del despulpe",
+    usaCubetasLimpias:
+      "Utiliza cubetas o tambos limpios para colocar el café despulpado",
+    mideKgDespulpado:
+      "Realiza una medición en kilogramos del café resultado del despulpe",
   };
 
   return (
-    <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style={{ backgroundColor: baseColor }}>
-      <div className="card shadow-lg border-0" style={{ width: "100%", maxWidth: "75%" }}>
-        <div className="card-body" style={{ background: baseColor, padding: "30px 25px" }}>
-          <h4 className="card-title text-center mb-4" style={{ color: primaryColor }}>
+    <div
+      className="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4"
+      style={{ backgroundColor: baseColor }}
+    >
+      <div
+        className="card shadow-lg border-0"
+        style={{ width: "100%", maxWidth: "75%" }}
+      >
+        <div
+          className="card-body"
+          style={{ background: baseColor, padding: "30px 25px" }}
+        >
+          <h4
+            className="card-title text-center mb-4"
+            style={{ color: primaryColor }}
+          >
             Caracterización de Cosecha y Despulpado
           </h4>
 
           {error && (
-            <div className="alert alert-danger" role="alert" style={{ borderRadius: "15px" }}>
+            <div
+              className="alert alert-danger"
+              role="alert"
+              style={{ borderRadius: "15px" }}
+            >
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Recolecta Clasificación */}
             <div className="mb-4">
-              <label className="form-label d-block" style={{ color: primaryColor, fontWeight: "bold" }}>
-                {PREGUNTA_IDS.recolectaClasificacion}.- ¿Cómo se realiza la recolecta y la clasificación de la cereza? Marque lo que realiza
+              <label
+                className="form-label d-block"
+                style={{ color: primaryColor, fontWeight: "bold" }}
+              >
+                {PREGUNTA_IDS.recolectaClasificacion}.- ¿Cómo se realiza la
+                recolecta y la clasificación de la cereza? Marque lo que realiza
               </label>
               {Object.entries(recolectaOptions).map(([key, label]) => (
                 <div className="form-check" key={key}>
@@ -424,13 +202,16 @@ function CosechaDespulpado() {
                     onChange={handleCheckboxChange}
                     disabled={isLoading}
                   />
-                  <label className="form-check-label" htmlFor={`recolecta_${key}`}>
+                  <label
+                    className="form-check-label"
+                    htmlFor={`recolecta_${key}`}
+                  >
                     {label}
                   </label>
                 </div>
               ))}
 
-              {/* ¿Cuál? solo si se marca "desinfección" */}
+              {/* Mostrar el input de ¿Cuál? solo si está marcada la opción de desinfección */}
               {formData.recolectaClasificacion.desinfeccion && (
                 <div className="mt-2">
                   <input
@@ -438,7 +219,7 @@ function CosechaDespulpado() {
                     className="form-control"
                     placeholder="¿Cuál?"
                     name="desinfeccionCual"
-                    value={formData.desinfeccionCual}
+                    value={formData.desinfeccionCual || ""}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
@@ -446,10 +227,13 @@ function CosechaDespulpado() {
               )}
             </div>
 
-            {/* Despulpado */}
             <div className="mb-3">
-              <label className="form-label d-block" style={{ color: primaryColor, fontWeight: "bold" }}>
-                {PREGUNTA_IDS.procesoDespulpado}.- Describa cómo realiza el despulpado: Marque lo que realiza
+              <label
+                className="form-label d-block"
+                style={{ color: primaryColor, fontWeight: "bold" }}
+              >
+                {PREGUNTA_IDS.procesoDespulpado}.- Describa como realiza el
+                despulpado: Marque lo que realiza
               </label>
               {Object.entries(despulpadoOptions).map(([key, label]) => (
                 <div className="form-check" key={key}>
@@ -463,7 +247,10 @@ function CosechaDespulpado() {
                     onChange={handleCheckboxChange}
                     disabled={isLoading}
                   />
-                  <label className="form-check-label" htmlFor={`despulpado_${key}`}>
+                  <label
+                    className="form-check-label"
+                    htmlFor={`despulpado_${key}`}
+                  >
                     {label}
                   </label>
                 </div>
@@ -474,7 +261,12 @@ function CosechaDespulpado() {
               <button
                 type="submit"
                 className="btn btn-lg px-4"
-                style={{ background: secondaryColor, color: "white", borderRadius: "25px", fontWeight: "bold" }}
+                style={{
+                  background: secondaryColor,
+                  color: "white",
+                  borderRadius: "25px",
+                  fontWeight: "bold",
+                }}
                 disabled={isLoading}
               >
                 {isLoading ? "Guardando..." : "Siguiente"}
@@ -488,3 +280,4 @@ function CosechaDespulpado() {
 }
 
 export default CosechaDespulpado;
+
