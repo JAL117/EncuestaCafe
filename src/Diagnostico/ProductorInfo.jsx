@@ -6,10 +6,10 @@ import axios from 'axios';
 const API_ENDPOINT = 'http://localhost:3000';
 
 const municipiosChiapas = [
-    "Acacoyagua", "Acala", "Acapetahua", "Aldama", "Altamirano", "Amatán", "Amatenango de la Frontera",
+    "Otro","Acacoyagua", "Acala", "Acapetahua", "Aldama", "Altamirano", "Amatán", "Amatenango de la Frontera",
     "Amatenango del Valle", "Ángel Albino Corzo", "Arriaga", "Bejucal de Ocampo", "Bella Vista",
     "Benemérito de las Américas", "Berriozábal", "Bochil", "Cacahoatán", "Catazajá", "Cintalapa de Figueroa",
-    "Coapilla", "Comitán de Domínguez", "Copainalá", "El Bosque", "El Porvenir", "Escuintla", "Francisco León",
+    "Coapilla", "Comitán de Domínguez", "Copainalá", "Chilón", "El Bosque", "El Porvenir", "Escuintla", "Francisco León",
     "Frontera Comalapa", "Frontera Hidalgo", "Huehuetán", "Huitiupán", "Huixtán", "Huixtla", "Ixhuatán",
     "Ixtacomitán", "Ixtapa", "Ixtapangajoya", "Jiquipilas", "Jitotol", "Juárez", "La Concordia",
     "La Grandeza", "La Independencia", "La Libertad", "La Trinitaria", "Larráinzar", "Las Margaritas",
@@ -29,6 +29,7 @@ function ProductorInfo() {
     const [formData, setFormData] = useState({
         nombreProductor: '',
         municipio: '',
+        otroMunicipio: '',
         localidad: '',
         perteneceGrupo: null,
         nombreGrupo: '',
@@ -71,7 +72,7 @@ function ProductorInfo() {
 
         const dataToSend = {
             nombreProductor: formData.nombreProductor,
-            municipio: formData.municipio,
+            municipio: formData.municipio === 'Otro' ? formData.otroMunicipio : formData.municipio,
             localidad: formData.localidad,
             perteneceGrupo: formData.perteneceGrupo,
             nombreGrupo: formData.nombreGrupo ? formData.nombreGrupo : null,
@@ -131,6 +132,18 @@ function ProductorInfo() {
                                     </option>
                                 ))}
                             </select>
+
+                            {formData.municipio === 'Otro' && (
+                                <input
+                                    type='text'
+                                    className='form-control mt-2'
+                                    placeholder='Especifique el municipio'
+                                    name='otroMunicipio'
+                                    value={formData.otroMunicipio}
+                                    onChange={handleChange}
+                                    disabled={isLoading}
+                                />
+                            )}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="localidad" className="form-label" style={{ color: primaryColor, fontWeight: 'bold' }}>Localidad:</label>
